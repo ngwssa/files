@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="generator" content="Three.js Editor">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+        font-family: sans-serif;
+        font-size: 13px;
+        background-color: #000;
+        margin: 0px;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body ontouchstart="">
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+
+    <script>
+      new THREE.FileLoader().load( 'app.json', function ( text ) {
+        const json = JSON.parse(text)
+        const loader = new THREE.ObjectLoader();
+        const dom = document.createElement( 'div' );
+
+        const renderer = new THREE.WebGLRenderer( { antialias: true } );
+        renderer.gammaOutput = true;
+        renderer.shadowMap.enabled = true;
+        renderer.vr.enabled = false;
+        renderer.setClearColor( 0x000000 );
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setSize(window.innerWidth , window.innerHeight);
+        dom.appendChild( renderer.domElement );
+        if ( renderer.vr.enabled ) {
+          dom.appendChild( WEBVR.createButton( renderer ) );
+        }
+
+        const scene = loader.parse( json.scene );
+
+        const camera = loader.parse( json.camera );
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        var controls = new THREE.OrbitControls( camera, renderer.domElement );
+        // controls.update();
+
+        // renderer.render( scene, camera );
+
+
+        animate();
+
+        function animate() {
+
+          requestAnimationFrame( animate );
+
+          // required if controls.enableDamping or controls.autoRotate are set to true
+          controls.update();
+
+          renderer.render( scene, camera );
+
+        }
+
+        document.body.appendChild( dom );
+      } );
+    </script>
+  </body>
+</html>
