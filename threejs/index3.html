@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="generator" content="Three.js Editor">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        font-family: sans-serif;
+        font-size: 13px;
+        background-color: #000;
+        margin: 0px;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+        margin: 50px auto;
+      }
+    </style>
+  </head>
+  <body ontouchstart="">
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+
+    <script>
+      new THREE.FileLoader().load('app.json', function (text) {
+          const WIDTH = 400;
+          const HEIGHT = 300;
+          const BGCOLOR = 0x37bb80;
+          const json = JSON.parse(text)
+          const loader = new THREE.ObjectLoader();
+          const container = document.createElement('div');
+
+          const renderer = new THREE.WebGLRenderer({ antialias: true });
+          renderer.gammaOutput = true;
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+          renderer.vr.enabled = false;
+          renderer.setClearColor(BGCOLOR);
+          renderer.setPixelRatio(window.devicePixelRatio);
+          renderer.setSize(WIDTH, HEIGHT);
+          container.appendChild(renderer.domElement);
+
+          const scene = loader.parse(json.scene);
+          scene.background = new THREE.Color(BGCOLOR);
+          scene.castShadow = true; //default is false
+          scene.receiveShadow = true; //default is false
+
+          const camera = loader.parse(json.camera);
+          camera.aspect = WIDTH / HEIGHT;
+          camera.updateProjectionMatrix();
+
+          const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+          const hemisphereLight = new THREE.HemisphereLight(0xffffff, 0x000000, 0.3);
+          // hemisphereLight.color.setHSL(0.6, 1, 0.6);
+          // hemisphereLight.groundColor.setHSL(0.095, 1, 0.75);
+          // hemisphereLight.position.set(0, 50, 0);
+          scene.add(hemisphereLight);
+
+          const light = new THREE.DirectionalLight(0xffffff, .5);
+          light.position.set(-2, 3, -1);
+          light.castShadow = true;
+          scene.add(light);
+          light.shadow.mapSize.width = 512;  // default
+          light.shadow.mapSize.height = 512; // default
+          light.shadow.camera.near = 0.5;    // default
+          light.shadow.camera.far = 500;     // default
+
+          document.body.appendChild(container);
+
+          animate();
+
+          function animate() {
+              requestAnimationFrame(animate);
+              controls.update();
+              renderer.render(scene, camera);
+          }
+      });
+    </script>
+  </body>
+</html>
