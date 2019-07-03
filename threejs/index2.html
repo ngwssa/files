@@ -19,10 +19,10 @@
         margin: 0px;
         overflow: hidden;
       }
-      canvas {
+      /*canvas {
         display: block;
         margin: 50px auto;
-      }
+      }*/
     </style>
   </head>
   <body ontouchstart="">
@@ -31,8 +31,10 @@
 
     <script>
       new THREE.FileLoader().load('app.json', function (text) {
-          const WIDTH = 400;
-          const HEIGHT = 300;
+          // const WIDTH = 400;
+          // const HEIGHT = 300;
+          const WIDTH = window.innerWidth;
+          const HEIGHT = window.innerHeight;
           const BGCOLOR = 0x37bb80;
           const json = JSON.parse(text)
           const loader = new THREE.ObjectLoader();
